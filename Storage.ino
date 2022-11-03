@@ -1,38 +1,41 @@
-#include "Storage.h"
+#include <EEPROM.h>
+#include "StorageNVM.hpp"
 
+typedef struct A {
+    int a;
+    float b;
+    char c[8];
+};
 
 void write() {
-  int i = -123;
-  float f = 1234.5678;
-  String s = "Hola que tal";
-
-  Storage.setInt(i, 0);
-  Storage.setFloat(f, 1);
-  Storage.setString(s.c_str(), strlen(s.c_str()), 2);
+    A a = {8, 13.96};
+    strlcpy(a.c, "holo", 8);
+    
+    StorageNVM.put(a);
 }
 
 void read() {
-  int i = Storage.getInt(0);
-  float f = Storage.getFloat(1);
-  const size_t len = 64;
-  char c[len]{0};
-  Storage.getString(c, len, 2);
-
-  Serial.println(i);
-  Serial.println(f);
-  Serial.println(c);
+    A a;
+    
+    StorageNVM.get(a);
+    
+    Serial.println(a.a);
+    Serial.println(a.b);
+    Serial.println(a.c);
 }
 
 void setup() {
-  Serial.begin(115200);
-  Serial.println("\n");
-  delay(1000);
+    Serial.begin(115200);
+    Serial.println("\n");
+    delay(1000);
 
-  //Storage.PrintAll();
-  read();
-  //Storage.PrintAll();
+    write();
+    Serial.println("write done");
+
+    read();
+    Serial.println("read done");
 }
 
 void loop() {
-  delay(1000);
+    delay(1000);
 }
